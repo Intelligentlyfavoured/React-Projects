@@ -1,0 +1,256 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #1d2634;
+  color: #9e9ea4;
+  font-family: 'Montserrat', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 260px 1fr; /* Sidebar and Main Content */
+  grid-template-rows: 60px auto; /* Header and Main Content */
+  grid-template-areas:
+    "sidebar header"
+    "sidebar main";
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Header */
+.header {
+  grid-area: header;
+  background-color: #263043;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Sidebar */
+#sidebar {
+  grid-area: sidebar;
+  height:100%;
+  background-color: #263043;
+  color: #9e9ea4;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  overflow-y: auto;
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(-100%); /* Hidden by default on mobile */
+}
+
+.sidebar-title {
+  margin-bottom: 20px;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-list-item {
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s;
+}
+
+.sidebar-list-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+
+.sidebar-list-item a {
+  text-decoration: none;
+  color: inherit;
+}
+.sidebar-responsive {
+  transform: translateX(0);
+ } /* Slide in when active */
+
+.menu-icon {
+  display: inline; /* Visible on smaller screens */
+  cursor: pointer;
+  font-size: 24px;
+  color: #fff;
+}
+
+/* Main */
+.main-container {
+  grid-area: main;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.main-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.main-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.card {
+  background-color: #2a2f3b;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+}
+
+.card:first-child {
+  background-color: #2962ff;
+}
+
+.card:nth-child(2) {
+  background-color: #ff6d00;
+}
+
+.card:nth-child(3) {
+  background-color: #2e7d32;
+}
+
+.card:nth-child(4) {
+  background-color: #d50000;
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  height: 400px;
+}
+
+.charts > div {
+  height: 100%;
+}
+
+/* Responsive Adjustments */
+.close_icon {
+  display: none; /* Hidden by default */
+  color: red;
+  margin-left: 30px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 60px auto;
+    grid-template-areas:
+      "header"
+      "main";
+  }
+
+  #sidebar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 260px;
+    height: 100vh;
+    transform: translateX(-260px);
+    z-index: 1000;
+  }
+
+  .menu-icon {
+    display: inline;
+    cursor: pointer;
+  }
+
+  .charts {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  .close_icon {
+    display: inline; /* Show only on small screens */
+  }
+}
+
+@media screen and (min-width: 992px) {
+  #sidebar {
+    transform: translateX(0); /* Always visible on large screens */
+  }
+
+  .menu-icon {
+    display: none; /* Hide menu icon on large screens */
+  }
+}
+
+/* Light/Dark Mode */
+body.light-mode {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.header.light-mode {
+  background-color: #f8f9fa;
+  color: #000000;
+}
+
+.sidebar.light-mode {
+  background-color: #f8f9fa;
+  color: #263043;
+}
+
+body.dark-mode {
+  background-color: #263043;
+  color: white;
+}
+
+.header.dark-mode {
+  background-color: #263043;
+  color: white;
+}
+
+h3 {
+  color: #9e9ea4;
+  text-align: left;
+  font-family: 'Montserrat', sans-serif;
+  margin-bottom: 20px;
+}
+
+.MuiDataGrid-root {
+  font-family: 'Montserrat', sans-serif;
+  border: none;
+}
+
+.MuiDataGrid-columnHeaders {
+  background-color: #263043;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.MuiDataGrid-row {
+  font-size: 0.9rem;
+}
+
+.MuiDataGrid-row:hover {
+  background-color: #f1f3f5;
+}
+
+.MuiCheckbox-root {
+  color: #2962ff !important;
+}
