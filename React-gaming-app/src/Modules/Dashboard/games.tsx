@@ -1,149 +1,268 @@
-import { useState } from "react";
-import { DataGrid, GridColDef, GridToolbarContainer } from "@mui/x-data-grid";
-import { Box, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import React, { useState } from "react";
 
-const Games = () => {
-  const [rows, setRows] = useState([
-    { id: 1, gameName: "Daily Bounty", bronze: 120, silver: 80, gold: 40, total: 240 },
-    { id: 2, gameName: "Bounty Play Bid", bronze: 90, silver: 70, gold: 30, total: 190 },
-    { id: 3, gameName: "Burst Credo", bronze: 150, silver: 100, gold: 50, total: 300 },
-  ]);
+const GameManagement: React.FC = () => {
+  const [activeForm, setActiveForm] = useState<"insert" | "update" | null>(null); // Track which form is active
+  const [responseMessage, setResponseMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [open, setOpen] = useState(false);
-  const [newGame, setNewGame] = useState({
-    id: 0,
-    gameName: "",
-    bronze: 0,
-    silver: 0,
-    gold: 0,
-  });
+  // Insert Game State
+  const [gameName, setGameName] = useState<string>("");
+  const [gameDescription, setGameDescription] = useState<string>("");
+  const [gameStatus, setGameStatus] = useState<string>("1"); // Default
+  const [winnerAmount, setWinnerAmount] = useState<string>("");
+  const [winFactor, setWinFactor] = useState<string>("");
+  const [createdBy, setCreatedBy] = useState<string>("1");
 
-  const handleAdd = () => {
-    setRows((prevRows) => [
-      ...prevRows,
-      { ...newGame, total: newGame.bronze + newGame.silver + newGame.gold, id: rows.length + 1 },
-    ]);
-    setOpen(false);
-    setNewGame({ id: 0, gameName: "", bronze: 0, silver: 0, gold: 0 });
+  // Update Game State
+  const [gameId, setGameId] = useState<string>("");
+  const [updatedGameName, setUpdatedGameName] = useState<string>("");
+  const [updatedBy, setUpdatedBy] = useState<number>(1);
+
+  // Handle Insert Game
+  const handleInsertGame = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setResponseMessage("");
+    setIsLoading(true);
+
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setResponseMessage("Authentication token is missing. Please log in.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://197.248.122.31:3000/api/insert-game", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          game_name: gameName,
+          game_description: gameDescription,
+          game_status: gameStatus,
+          winner_amount: winnerAmount,
+          win_factor: winFactor,
+          createdby: createdBy,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Insert failed.");
+      }
+
+      if (data.success) {
+        setResponseMessage("Game inserted successfully!");
+      } else {
+        setResponseMessage("Insert operation failed.");
+      }
+    } catch (error: any) {
+      setResponseMessage(error.message || "An error occurred.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleDelete = (id: number) => {
-    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
-  };
+  // Handle Update Game
+  const handleUpdateGame = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setResponseMessage("");
+    setIsLoading(true);
 
-  const processRowUpdate = (newRow: any) => {
-    const updatedRow = { ...newRow, total: newRow.bronze + newRow.silver + newRow.gold };
-    setRows((prevRows) => prevRows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setResponseMessage("Authentication token is missing. Please log in.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://197.248.122.31:3000/api/update-game", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          game_id: parseInt(gameId, 10),
+          game_name: updatedGameName,
+          updatedby: createdBy,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Update failed.");
+      }
+
+      if (data.success) {
+        setResponseMessage("Game updated successfully!");
+      } else {
+        setResponseMessage("Update operation failed.");
+      }
+    } catch (error: any) {
+      setResponseMessage(error.message || "An error occurred.");
+    } finally {
+      setIsLoading(false);
+    }
   };
-  const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "gameName", headerName: "Game Name", flex: 1, editable: true },
-    { field: "bronze", headerName: "Bronze Players", flex: 1, editable: true },
-    { field: "silver", headerName: "Silver Players", flex: 1, editable: true },
-    { field: "gold", headerName: "Gold Players", flex: 1, editable: true },
-    { field: "total", headerName: "Total Players", flex: 1 },
-    {
-      field: "actions",
-      headerName: "Actions",
-      sortable: false,
-      renderCell: (params) => (
-        <Button variant="contained" color="error" onClick={() => handleDelete(params.row.id)}>
-          Delete
-        </Button>
-      ),
-    },
-  ];
-  
 
   return (
-    <Box sx={{ height: 500, width: "100%" }}>
-      <h3>Games Overview</h3>
-      <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
-        Add Game
-      </Button>
-     
-      <DataGrid
-  rows={rows}
-  columns={columns}
-  initialState={{
-    pagination: {
-      paginationModel: { pageSize: 5, page: 0 },
-    },
-  }}
-  pageSizeOptions={[5, 10]}
-  checkboxSelection
-  disableRowSelectionOnClick
-  processRowUpdate={processRowUpdate}
-  slots={{
-    toolbar: GridToolbarContainer,
-  }}
-  sx={{
-    backgroundColor: "#ffffff",
-    color: "#000000",
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-    borderRadius: "4px",
-    mt: 2,
-   
-  
-    '& .MuiDataGrid-columnHeaders': {
-      backgroundColor: '#f7f7f7', // Light gray background for visibility
-      color: '#2962ff',             // Black text for the headers
-      fontWeight: 'bold',        // Make header text bold
-    },
-    '& .MuiDataGrid-cell': {
-      backgroundColor: '#fff',   // Ensure cell background color is white
-    },
+    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
+      <h1>Game Management</h1>
 
+      <div style={{ marginBottom: "20px" }}>
+        <button
+          onClick={() => setActiveForm("insert")}
+          style={{
+            marginRight: "10px",
+            padding: "10px 20px",
+            backgroundColor: activeForm === "insert" ? "#007BFF" : "#f0f0f0",
+            color: activeForm === "insert" ? "#fff" : "#000",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
+          Insert Game
+        </button>
+        <button
+          onClick={() => setActiveForm("update")}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: activeForm === "update" ? "#007BFF" : "#f0f0f0",
+            color: activeForm === "update" ? "#fff" : "#000",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
+          Update Game
+        </button>
+      </div>
 
-  }}
-/>
+      {responseMessage && (
+        <p style={{ color: responseMessage.includes("successfully") ? "green" : "red" }}>
+          {responseMessage}
+        </p>
+      )}
 
+      {/* Insert Form */}
+      {activeForm === "insert" && (
+        <form onSubmit={handleInsertGame}>
+          <div style={{ marginBottom: "10px" }}>
+            <label>Game Name:</label>
+            <input
+              type="text"
+              value={gameName}
+              onChange={(e) => setGameName(e.target.value)}
+              required
+              style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+            />
+          </div>
+          <div style={{ marginBottom: "10px" }}>
+            <label>Game Description:</label>
+            <input
+              type="text"
+              value={gameDescription}
+              onChange={(e) => setGameDescription(e.target.value)}
+              required
+              style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+            />
+          </div>
+          <div style={{ marginBottom: "10px" }}>
+            <label>Game Status:</label>
+            <select
+              value={gameStatus}
+              onChange={(e) => setGameStatus(e.target.value)}
+              required
+              style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+            >
+              <option value="1">Active</option>
+              <option value="0">Inactive</option>
+            </select>
+          </div>
+          <div style={{ marginBottom: "10px" }}>
+            <label>Winner Amount:</label>
+            <input
+              type="number"
+              value={winnerAmount}
+              onChange={(e) => setWinnerAmount(e.target.value)}
+              required
+              style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+            />
+          </div>
+          <div style={{ marginBottom: "10px" }}>
+            <label>Win Factor:</label>
+            <input
+              type="text"
+              value={winFactor}
+              onChange={(e) => setWinFactor(e.target.value)}
+              required
+              style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+            />
+          </div>
+          <div style={{ marginBottom: "10px" }}>
+            <label>Created By (User ID):</label>
+            <input
+              type="number"
+              value={createdBy}
+              onChange={(e) => setCreatedBy(e.target.value)}
+              required
+              style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+            />
+          </div>
+          <button type="submit" disabled={isLoading} style={{ padding: "10px 20px" }}>
+            {isLoading ? "Processing..." : "Insert Game"}
+          </button>
+        </form>
+      )}
 
-      {/* Dialog for Adding New Game */}
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Add New Game</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Game Name"
-            fullWidth
-            value={newGame.gameName}
-            onChange={(e) => setNewGame({ ...newGame, gameName: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Bronze Players"
+      {/* Update Form */}
+      {activeForm === "update" && (
+        <form onSubmit={handleUpdateGame}>
+          <div style={{ marginBottom: "10px" }}>
+            <label>Game ID:</label>
+            <input
+              type="text"
+              value={gameId}
+              onChange={(e) => setGameId(e.target.value)}
+              required
+              style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+            />
+          </div>
+          <div style={{ marginBottom: "10px" }}>
+            <label>Updated Game Name:</label>
+            <input
+              type="text"
+              value={updatedGameName}
+              onChange={(e) => setUpdatedGameName(e.target.value)}
+              required
+              style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+            />
+          </div>
+          <div style={{ marginBottom: "10px" }}>
+          <label htmlFor="updatedBy">Updated By:</label>
+          <input
             type="number"
-            fullWidth
-            value={newGame.bronze}
-            onChange={(e) => setNewGame({ ...newGame, bronze: Number(e.target.value) })}
+            id="updatedBy"
+            value={updatedBy}
+            onChange={(e) => setUpdatedBy(Number(e.target.value))}
+            required
+            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
           />
-          <TextField
-            margin="dense"
-            label="Silver Players"
-            type="number"
-            fullWidth
-            value={newGame.silver}
-            onChange={(e) => setNewGame({ ...newGame, silver: Number(e.target.value) })}
-          />
-          <TextField
-            margin="dense"
-            label="Gold Players"
-            type="number"
-            fullWidth
-            value={newGame.gold}
-            onChange={(e) => setNewGame({ ...newGame, gold: Number(e.target.value) })}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleAdd}>Add</Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+          </div>
+          <button type="submit" disabled={isLoading} style={{ padding: "10px 20px" }}>
+            {isLoading ? "Processing..." : "Update Game"}
+          </button>
+        </form>
+      )}
+    </div>
   );
 };
 
-export default Games;
+export default GameManagement;
