@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import '../../App.css'
 interface Game {
   game_id: number;
   game_name: string;
@@ -154,7 +154,7 @@ const Games: React.FC = () => {
 
       <div style={{ marginBottom: "20px" }}>
         <button
-          onClick={() => setActiveForm("insert")}
+          onClick={() => setActiveForm(activeForm === "insert"? null : "insert")}
           style={{
             marginRight: "10px",
             padding: "10px 20px",
@@ -163,17 +163,23 @@ const Games: React.FC = () => {
             borderRadius: "5px",
           }}
         >
-          Insert Game
+             Insert Game
+        
+         
         </button>
         <button
-          onClick={() => setActiveForm("update")}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: activeForm === "update" ? "#007BFF" : "#f0f0f0",
-            color: activeForm === "update" ? "#fff" : "#000",
-            borderRadius: "5px",
-          }}
-        >
+    onClick={() =>
+      setActiveForm(activeForm === "update" ? null : "update")
+    }
+    style={{
+      padding: "10px 20px",
+      backgroundColor: activeForm === "update" ? "#007BFF" : "#f0f0f0",
+      color: activeForm === "update" ? "#fff" : "#000",
+      borderRadius: "5px",
+    }}
+  >
+   
+
           Update Game
         </button>
       </div>
