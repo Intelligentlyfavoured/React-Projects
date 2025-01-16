@@ -1,45 +1,121 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import '/src/App.css';
-import 'boxicons';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+// import axios from "axios";
 
-function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Hook for navigation
+// interface LoginResponse {
+//   success: boolean;
+//   token: string;
+//   user: {
+//     user_id: number;
+//     email_address: string;
+//     user_name: string;   
+//   };
+// }
 
-  const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
 
-    // Example: Login validation logic
-    if (email === 'user@example.com' && password === 'password123') {
-      console.log('Login successful!');
-      alert('Login successful! Redirecting to dashboard...');
-      
-      // Redirect to the dashboard
-      navigate('/home');
-    } else {
-      alert('Invalid email or password. Please try again.');
+const AdminLogin: React.FC = () => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const navigate = useNavigate(); 
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage("");
+    setIsLoading(true);
+  
+    try {
+      const response = await fetch("http://197.248.122.31:3000/api/auth/admin-login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email_address: email,
+          password: password,
+        }),
+      });
+  
+      if (!response.ok) {
+        // Handle HTTP errors
+        const errorData = await response.json();
+        throw new Error(errorData.message || "An error occurred during login.");
+      }
+  
+      const data = await response.json(); // Parse JSON response
+      const { success, token, user } = data;
+  
+      if (success) {
+        localStorage.setItem("authToken", token);
+        alert(`Welcome, ${user.user_name}!`);
+        navigate("/Dashboard");
+      } else {
+        setErrorMessage("Login failed. Please check your credentials.");
+      }
+    } catch (error: any) {
+      setErrorMessage(error.message || "An error occurred during login.");
+    } finally {
+      setIsLoading(false);
     }
   };
+  
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setErrorMessage("");
+  //   setIsLoading(true);
+
+  //   try {
+  //     const response = await axios.post<LoginResponse>(
+  //         "http://197.248.122.31:3000/api/auth/admin-login",
+  //       {
+  //       email_address: email,
+  //       password: password,
+  //     });
+      
+
+  //     const { success, token, user } = response.data;
+
+  //     if (success) {
+      
+  //       localStorage.setItem("authToken", token);
+  //       alert(`Welcome, ${user.user_name}!`);
+      
+  //       navigate("/home");
+  //     } else {
+  //       setErrorMessage("Login failed. Please check your credentials.");
+  //     }
+  //   } catch (error: any) {
+  //     setErrorMessage(
+  //       error.response?.data?.message || "An error occurred during login."
+  //     );
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+
+  
+
+  // };
 
   return (
-    <div className="login-container">
-      <h1>Sign In</h1>
-      <form onSubmit={handleLogin}>
-        <div className="form-group">
-          <label htmlFor="email">Email:</label>
+    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}>
+      <h2>Admin Login</h2>
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+      <form onSubmit={handleSubmit}>
+        <div style={{ marginBottom: "10px" }}>
+          <label htmlFor="email">Email Address:</label>
           <input
             type="email"
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            placeholder="Enter your email"
+            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
           />
-          <i className="bx bx-user"></i>
         </div>
-        <div className="form-group">
+        <div style={{ marginBottom: "10px" }}>
           <label htmlFor="password">Password:</label>
           <input
             type="password"
@@ -47,25 +123,27 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            placeholder="Enter your password"
+            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
           />
         </div>
-        <button type="submit" className="login-button">
-          Sign In
+        <button
+          type="submit"
+          disabled={isLoading}
+          style={{
+            width: "100%",
+            padding: "10px",
+            backgroundColor: "#007BFF",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
+          {isLoading ? "Logging in..." : "Login"}
         </button>
-        <div className="remember-forgot">
-          <input type="checkbox" id="remember" />
-          <label htmlFor="remember">Remember me</label>
-        </div>
-        <a href="">Forgot Password?</a>
-        <div className="register-link">
-          <p>
-            Don't have an account? <a href="/signup">Sign Up</a>
-          </p>
-        </div>
       </form>
     </div>
   );
-}
+};
 
-export default Login;
+export default AdminLogin;
