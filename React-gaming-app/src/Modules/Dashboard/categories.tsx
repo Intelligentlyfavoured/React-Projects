@@ -25,9 +25,26 @@ const Categories: React.FC = () => {
   const [dailyAmount, setDailyAmount] = useState<number>(0.00); // Added daily_amount state
   const [createdBy, setCreatedBy] = useState<number>(1); // Default to user ID 1
 
+  const [updatedBy, setUpdatedBy] = useState<string>("1");
   const [categoryId, setCategoryId] = useState<number>(0);
   const [updatedCategoryName, setUpdatedCategoryName] = useState<string>("");
 
+  const resetInsertForm = () => {
+    setCategoryName("");
+    setGcStatus(1); // Default to active
+    setGcDescription("");
+    setDailyAmount(0.0);
+    setCreatedBy(1); // Default to user ID 1
+  };
+  
+  const resetUpdateForm = () => {
+    setCategoryId(0);
+    setUpdatedCategoryName("");
+    setGcStatus(1); // Default to active
+    setDailyAmount(0.0);
+    setUpdatedBy("1");
+  };
+  
   const fetchGameCategories = async () => {
     const token = localStorage.getItem("authToken");
     if (!token) {
@@ -97,7 +114,8 @@ const Categories: React.FC = () => {
       if (response.ok && data.success) {
         setResponseMessage("Category inserted successfully!");
         fetchGameCategories(); // Fetch the updated categories after insert
-        setActiveForm(null); // Close form after successful insert
+        setActiveForm(null); 
+        resetInsertForm();
       } else {
         throw new Error(data.message || "Insert failed.");
       }
@@ -132,7 +150,10 @@ const Categories: React.FC = () => {
         body: JSON.stringify({
           category_id: categoryId,
           category_name: updatedCategoryName,
-          daily_amount: dailyAmount, // Include daily_amount in the update request
+          daily_amount: dailyAmount, 
+          gc_status: gcStatus,
+          updatedby: parseInt(updatedBy, 10)
+          // Include daily_amount in the update request
         }),
       });
 
@@ -140,7 +161,9 @@ const Categories: React.FC = () => {
       if (response.ok && data.success) {
         setResponseMessage("Category updated successfully!");
         fetchGameCategories(); // Fetch the updated categories after update
-        setActiveForm(null); // Close form after successful update
+        setActiveForm(null);
+        resetUpdateForm()
+       
       } else {
         throw new Error(data.message || "Update failed.");
       }
@@ -211,7 +234,8 @@ const Categories: React.FC = () => {
             />
           </div>
           <div style={{ marginBottom: "10px" }}>
-            <label>Game Status:</label>
+            <label>Game 
+              :</label>
             <select
               value={gcStatus}
               onChange={(e) => setGcStatus(Number(e.target.value))}
@@ -282,6 +306,18 @@ const Categories: React.FC = () => {
             />
           </div>
           <div style={{ marginBottom: "10px" }}>
+        <label>Game Status:</label>
+        <select
+          value={gcStatus}
+          onChange={(e) => setGcStatus(Number(e.target.value))}
+          required
+          style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+        >
+          <option value="1">Active</option>
+          <option value="0">Inactive</option>
+        </select>
+      </div>
+          <div style={{ marginBottom: "10px" }}>
             <label>Daily Amount:</label>
             <input
               type="number"
@@ -291,6 +327,17 @@ const Categories: React.FC = () => {
               style={{ width: "100%", padding: "8px", marginTop: "5px" }}
             />
           </div>
+          <div style={{ marginBottom: "10px" }}>
+      <label htmlFor="updatedBy">Updated By:</label>
+      <input
+        type="number"
+        id="updatedBy"
+        value={updatedBy}
+        onChange={(e) => setUpdatedBy(e.target.value)}
+        required
+        style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+      />
+    </div>
           <button type="submit" disabled={isLoading} style={{ padding: "10px 20px" }}>
             {isLoading ? "Processing..." : "Update Category"}
           </button>
