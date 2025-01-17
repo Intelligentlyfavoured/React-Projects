@@ -27,7 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ openSidebarToggle, OpenSidebar }) => 
 
       <ul className="sidebar-list">
         <li className="sidebar-list-item">
-          <Link to=''>
+          <Link to='/home'>
             <BsGrid1X2Fill className="icon" /> Dashboard
           </Link>
         </li>

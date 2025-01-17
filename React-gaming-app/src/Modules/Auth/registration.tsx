@@ -1,79 +1,92 @@
-import React, { useState } from 'react';
-import '/src/App.css';
-import './login';
-import 'boxicons';
-import 'bootstrap';
-<script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+// import React, { useState } from 'react';
+// import axios from 'axios';
+// import '../../App.css';
 
+// const Registration: React.FC = () => {
+//     const [formData, setFormData] = useState({
+//         phone: '',
+//         national_id: '',
+//         player_name: '',
+//         player_pin: '',
+//     });
+//     const [responseMessage, setResponseMessage] = useState<string | null>(null);
 
-function Registration() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+//     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//         setFormData({ ...formData, [e.target.name]: e.target.value });
+//     };
 
-  const handleSignup = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (password !== confirmPassword) {
-      alert('Passwords do not match!');
-      return;
-    }
-    // Signup logic goes here
-    console.log('Email:', email);
-    console.log('Password:', password);
-    alert('Signup functionality not yet implemented.');
-  };
+//     const handleSubmit = async (e: React.FormEvent) => {
+//         e.preventDefault();
+//         try {
+//             const response = await axios.post('http://197.248.122.31:3000/api/auth/register', formData);
+//             setResponseMessage(`Registration Successful: ${response.data.message}`);
+//         } catch (error) {
+            
+//             if (axios.isAxiosError(error)) {
+//                 setResponseMessage(`Error: ${error.response?.data?.message || 'An error occurred'}`);
+//             } else {
+//                 setResponseMessage('An unknown error occurred');
+//             }
+//         }
+//     };
 
-  return (
-    <div className="signup-container">
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSignup}>
-        <div className="form-group">
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            placeholder="Enter your email"
-          />
-          <i className='bx bx-user'></i>
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            placeholder="Enter your password"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="confirmPassword">Confirm Password:</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            placeholder="Confirm your password"
-          />
-        </div>
-        <button type="submit" className="signup-button">
-          Sign Up
-        </button>
-        <p> Already have an account?  <a href='/signin'> Sign In</a></p>
-      </form>
-      
-      
+//     return (
+//         <div className="container mt-4">
+//             <h1 className="text-center">Player Registration</h1>
+//             <form className="form-container" onSubmit={handleSubmit}>
+//                 <div className="form-group">
+//                     <label htmlFor="phone">Phone Number:</label>
+//                     <input
+//                         type="text"
+//                         id="phone"
+//                         name="phone"
+//                         className="form-control"
+//                         value={formData.phone}
+//                         onChange={handleChange}
+//                         required
+//                     />
+//                 </div>
+//                 <div className="form-group">
+//                     <label htmlFor="national_id">National ID:</label>
+//                     <input
+//                         type="text"
+//                         id="national_id"
+//                         name="national_id"
+//                         className="form-control"
+//                         value={formData.national_id}
+//                         onChange={handleChange}
+//                         required
+//                     />
+//                 </div>
+//                 <div className="form-group">
+//                     <label htmlFor="player_name">Player Name:</label>
+//                     <input
+//                         type="text"
+//                         id="player_name"
+//                         name="player_name"
+//                         className="form-control"
+//                         value={formData.player_name}
+//                         onChange={handleChange}
+//                         required
+//                     />
+//                 </div>
+//                 <div className="form-group">
+//                     <label htmlFor="player_pin">Player PIN:</label>
+//                     <input
+//                         type="password"
+//                         id="player_pin"
+//                         name="player_pin"
+//                         className="form-control"
+//                         value={formData.player_pin}
+//                         onChange={handleChange}
+//                         required
+//                     />
+//                 </div>
+//                 <button type="submit" className="btn btn-primary mt-3">Register</button>
+//             </form>
+//             {responseMessage && <p className="response-message mt-3">{responseMessage}</p>}
+//         </div>
+//     );
+// };
 
-
-      
-    </div>
-    
-  );
-}
-
-export default Registration;
+// export default Registration;

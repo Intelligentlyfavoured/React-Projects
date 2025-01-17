@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 // }
 
 
-const AdminLogin: React.FC = () => {
+const AdminLogin: React.FC <{setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>}> =  ({ setIsAuthenticated }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -49,6 +49,7 @@ const AdminLogin: React.FC = () => {
   
       if (success) {
         localStorage.setItem("authToken", token);
+        setIsAuthenticated(true);
         alert(`Welcome, ${user.user_name}!`);
         navigate("/Dashboard");
       } else {
