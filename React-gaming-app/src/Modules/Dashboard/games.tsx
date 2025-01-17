@@ -4,7 +4,7 @@ interface Game {
   game_id: number;
   game_name: string;
   game_description: string;
-  game_status: string;
+  game_status: number;
   winner_amount: string;
   win_factor: string;
   createdby: number;
@@ -18,13 +18,14 @@ const Games: React.FC = () => {
 
   const [gameName, setGameName] = useState<string>("");
   const [gameDescription, setGameDescription] = useState<string>("");
-  const [gameStatus, setGameStatus] = useState<string>("1");
+  const [gameStatus, setGameStatus] = useState<number>(1);
   const [winnerAmount, setWinnerAmount] = useState<string>("");
   const [winFactor, setWinFactor] = useState<string>("");
   const [createdBy, setCreatedBy] = useState<string>("1");
 
   const [gameId, setGameId] = useState<string>("");
   const [updatedGameName, setUpdatedGameName] = useState<string>("");
+  
   const [updatedBy, setUpdatedBy] = useState<string>("1");
   const fetchGames = async () => {
     const token = localStorage.getItem("authToken");
@@ -56,51 +57,65 @@ const Games: React.FC = () => {
     }
   };
 
-  const handleInsertGame = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setResponseMessage("");
-    setIsLoading(true);
+  
+const handleInsertGame = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setResponseMessage("");
+        setIsLoading(true);
+      
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          setResponseMessage("Authentication token is missing. Please log in.");
+          setIsLoading(false);
+          return;
+        }
+      
+        try {
+          const payload = {
+            game_name: gameName,
+            game_description: gameDescription,
+            game_status: gameStatus, 
+            winner_amount: winnerAmount,
+            win_factor: winFactor,
+            createdby: createdBy,
+          };
+      
+          //console.log("Payload sent to API:", payload);
+      
+          const response = await fetch("http://197.248.122.31:3000/api/insert-game", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(payload),
+          });
+      
+          const data = await response.json();
+          if (response.ok && data.success) {
+            setResponseMessage("Game inserted successfully!");
+            fetchGames();
+            setActiveForm(null); // Close form after successful insert
+            setGameName("");
+            setGameDescription("");
+            setGameStatus(1);
+            setWinnerAmount("");
+            setWinFactor("");
+            setCreatedBy("1");
+          } else {
+            throw new Error(data.message || "Insert failed.");
+          }
+        } catch (error: unknown) {
+          setResponseMessage(
+            error instanceof Error ? error.message : "An unexpected error occurred."
+          );
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
 
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      setResponseMessage("Authentication token is missing. Please log in.");
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      const response = await fetch("http://197.248.122.31:3000/api/insert-game", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          game_name: gameName,
-          game_description: gameDescription,
-          game_status: gameStatus,
-          winner_amount: winnerAmount,
-          win_factor: winFactor,
-          createdby: createdBy,
-        }),
-      });
-
-      const data = await response.json();
-      if (response.ok && data.success) {
-        setResponseMessage("Game inserted successfully!");
-        fetchGames();
-        setActiveForm(null); // Close form after successful insert
-      } else {
-        throw new Error(data.message || "Insert failed.");
-      }
-    } catch (error: unknown) {
-      setResponseMessage(
-        error instanceof Error ? error.message : "An unexpected error occurred."
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
+   
 
   const handleUpdateGame = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,6 +139,8 @@ const Games: React.FC = () => {
         body: JSON.stringify({
           game_id: parseInt(gameId, 10),
           game_name: updatedGameName,
+          game_status: gameStatus,
+          updatedby: parseInt(updatedBy, 10)
         }),
       });
 
@@ -131,7 +148,11 @@ const Games: React.FC = () => {
       if (response.ok && data.success) {
         setResponseMessage("Game updated successfully!");
         fetchGames();
-        setActiveForm(null); // Close form after successful update
+        setActiveForm(null); 
+        setGameId("");
+            setUpdatedGameName("");
+            setGameStatus(1);
+            setUpdatedBy("1");
       } else {
         throw new Error(data.message || "Update failed.");
       }
@@ -196,45 +217,56 @@ const Games: React.FC = () => {
 
      {/* Update Form */}
      {activeForm === "update" && (
-        <form onSubmit={handleUpdateGame}>
-          <div style={{ marginBottom: "10px" }}>
-            <label>Game ID:</label>
-            <input
-              type="text"
-              value={gameId}
-              onChange={(e) => setGameId(e.target.value)}
-              required
-              style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-            />
-          </div>
-          <div style={{ marginBottom: "10px" }}>
-            <label>Updated Game Name:</label>
-            <input
-              type="text"
-              value={updatedGameName}
-              onChange={(e) => setUpdatedGameName(e.target.value)}
-              required
-              style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-            />
-          </div>
-          <div style={{ marginBottom: "10px" }}>
-            <label htmlFor="updatedBy">Updated By:</label>
-            <input
-              type="number"
-              id="updatedBy"
-              value={updatedBy}
-              onChange={(e) => setUpdatedBy(e.target.value)}
+  <form onSubmit={handleUpdateGame}>
+    <div style={{ marginBottom: "10px" }}>
+      <label>Game ID:</label>
+      <input
+        type="text"
+        value={gameId}
+        onChange={(e) => setGameId(e.target.value)}
+        required
+        style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+      />
+    </div>
+    <div style={{ marginBottom: "10px" }}>
+      <label>Updated Game Name:</label>
+      <input
+        type="text"
+        value={updatedGameName}
+        onChange={(e) => setUpdatedGameName(e.target.value)}
+        required
+        style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+      />
+    </div>
+    <div style={{ marginBottom: "10px" }}>
+      <label>Game Status:</label>
+      <select
+        value={gameStatus}
+        onChange={(e) => setGameStatus(Number(e.target.value))}    
+        required
+        style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+      >
+        <option value="1">Active</option>
+        <option value="0">Inactive</option>
+      </select>
+    </div>
+    <div style={{ marginBottom: "10px" }}>
+      <label htmlFor="updatedBy">Updated By:</label>
+      <input
+        type="number"
+        id="updatedBy"
+        value={updatedBy}
+        onChange={(e) => setUpdatedBy(e.target.value)}
+        required
+        style={{ width: "100%", padding: "8px", marginTop: "5px" }}
+      />
+    </div>
+    <button type="submit" disabled={isLoading} style={{ padding: "10px 20px" }}>
+      {isLoading ? "Processing..." : "Update Game"}
+    </button>
+  </form>
+)}
 
-              required
-              style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-            />
-          </div>
-          <button type="submit" disabled={isLoading} style={{ padding: "10px 20px" }}>
-            {isLoading ? "Processing..." : "Update Game"}
-          </button>
-        </form>
-     )
-    }
 {activeForm === "insert" && (
     <form onSubmit={handleInsertGame}>
       <div style={{ marginBottom: "10px" }}>
@@ -261,7 +293,7 @@ const Games: React.FC = () => {
         <label>Game Status:</label>
         <select
           value={gameStatus}
-          onChange={(e) => setGameStatus(e.target.value)}
+          onChange={(e) => setGameStatus(Number(e.target.value))}
           required
           style={{ width: "100%", padding: "8px", marginTop: "5px" }}
         >
@@ -325,7 +357,7 @@ const Games: React.FC = () => {
                 <td>{game.game_id}</td>
                 <td>{game.game_name}</td>
                 <td>{game.game_description}</td>
-                <td>{game.game_status === "1" ? "Active" : "Inactive"}</td>
+                <td>{game.game_status === 1 ? "Active" : "Inactive"}</td>
                 <td>{game.winner_amount}</td>
                 <td>{game.win_factor}</td>
                 <td>{game.createdby}</td>
