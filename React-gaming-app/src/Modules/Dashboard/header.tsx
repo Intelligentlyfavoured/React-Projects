@@ -53,14 +53,8 @@ const Header: React.FC<HeaderProps> = ({ OpenSidebar }) => {
       </div>
       <button
         onClick={handleLogout}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: '#FF4136',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-        }}
+        
+        
       >
         Logout
       </button>

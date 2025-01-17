@@ -21,6 +21,7 @@ const App: React.FC = () => {
   const OpenSidebar = () => {
     setOpenSidebarToggle(!openSidebarToggle);
   };
+  
 
   useEffect(() => {
     const authToken = localStorage.getItem("authToken");
