@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {useNavigate} from 'react-router-dom'
 import { 
   BsFillBellFill, BsFillEnvelopeFill, BsPersonCircle, 
   BsSearch, BsJustify, BsFillSunFill, BsFillMoonFill 
@@ -11,6 +12,16 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ OpenSidebar }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    navigate("/", { replace: true });
+    window.history.pushState(null, "", window.location.href); // Prevent back navigation
+  };
+  
+
+  
 
   // Toggle theme
   const toggleTheme = () => {
@@ -40,6 +51,19 @@ const Header: React.FC<HeaderProps> = ({ OpenSidebar }) => {
         <BsFillEnvelopeFill className="icon" />
         <BsPersonCircle className="icon" />
       </div>
+      <button
+        onClick={handleLogout}
+        style={{
+          padding: '10px 20px',
+          backgroundColor: '#FF4136',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+        }}
+      >
+        Logout
+      </button>
     </header>
   );
 };
