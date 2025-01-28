@@ -3,24 +3,22 @@ import './style.css'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
-function EmployeeLogin() {
+function Login() {
 
     const [values, setValues] = useState({
         email: '',
         password: ''
     })
-    axios.defaults.withCredentials = true;
     const navigate = useNavigate()
     axios.defaults.withCredentials = true;
     const [error, setError] = useState('')
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        axios.post('http://localhost:8081/employeelogin', values)
+        axios.post('http://localhost:8081/login', values)
         .then(res => {
             if(res.data.Status === 'Success') {
-                const id = res.data.id;
-                navigate('/employeedetail/'+id);
+                navigate('/');
             } else {
                 setError(res.data.Error);
             }
@@ -54,4 +52,4 @@ function EmployeeLogin() {
     )
 }
 
-export default EmployeeLogin
+export default Login
