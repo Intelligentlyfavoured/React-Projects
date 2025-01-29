@@ -8,11 +8,19 @@ export default defineConfig({
     proxy: {
       // Proxy API requests to the backend server
       '/api': {
-        target: 'http://197.248.122.31:3000', // Backend server URL
+        target: 'https://bonanza.tililtech.com', // Backend server URL
         changeOrigin: true,
         secure: false, // Set to true if using HTTPS on the backend
         rewrite: (path) => path.replace(/^\/api/, ''), 
       },
     },
-  }
+  },
+  css: {
+    postcss: {
+      // plugins: [tailwindcss()],
+    },
+  },
 })
+// function tailwindcss(): import("postcss").AcceptedPlugin {
+//   throw new Error('Function not implemented.')
+// }

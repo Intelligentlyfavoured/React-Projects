@@ -1,27 +1,148 @@
-/* CSS File: Games.css */
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
 
-table.games-table {
-    width: 100%;
-    border-collapse: collapse;
+/* Container */
+div {
+  padding: 20px;
+}
+
+/* Header */
+h1 {
+  text-align: center;
+  color: #2c3e50;
+}
+
+/* Button Styles */
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #2980b9;
+  color: #fff;
+}
+
+button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* Insert/Update Button */
+button[style*="background-color: #007BFF"] {
+  background-color: #3498db;
+  color: #fff;
+}
+
+button[style*="background-color: #f0f0f0"] {
+  background-color: #ecf0f1;
+  color: #2c3e50;
+}
+
+/* Response Message */
+p {
+  text-align: center;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+/* Form Styles */
+form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+form div {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+input:focus,
+select:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+th,
+td {
+  text-align: left;
+  padding: 12px;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #34495e;
+  color: #ecf0f1;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #f0f8ff;
+}
+
+td:last-child {
+  display: flex;
+  gap: 10px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  form,
+  table {
+    font-size: 14px;
   }
-  
-  table.games-table th,
-  table.games-table td {
-    border: 1px solid #ddd;
+
+  button {
+    font-size: 12px;
+  }
+
+  th,
+  td {
     padding: 8px;
   }
-  
-  table.games-table th {
-    background-color: #f4f4f4;
-    color: #333;
-    text-align: left;
+
+  td:last-child {
+    flex-direction: column;
   }
-  
-  table.games-table tbody tr:hover {
-    background-color: #f1f1f1;
-  }
-  
-  table.games-table .MuiTableCell-root {
-    text-align: center;
-  }
-  
+}
+
+

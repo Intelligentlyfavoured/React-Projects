@@ -202,6 +202,8 @@ const Categories: React.FC = () => {
           style={{
             padding: "10px 20px",
             backgroundColor: activeForm === "update" ? "#007BFF" : "#f0f0f0",
+
+            
             color: activeForm === "update" ? "#fff" : "#000",
             borderRadius: "5px",
           }}

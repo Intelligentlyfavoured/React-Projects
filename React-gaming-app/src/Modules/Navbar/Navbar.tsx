@@ -7,6 +7,7 @@ import {
 } from 'react-icons/bs';
 import {BiSolidUserCircle} from 'react-icons/bi';
 import { IoGameController } from "react-icons/io5";
+import './Navbar.css';
 // prop types
 type SidebarProps = {
   openSidebarToggle: boolean; // Determines if the sidebar is responsive

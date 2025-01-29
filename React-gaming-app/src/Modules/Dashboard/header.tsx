@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {useNavigate} from 'react-router-dom'
 import { 
-  BsFillBellFill, BsFillEnvelopeFill, BsPersonCircle, 
+  // BsFillBellFill, BsFillEnvelopeFill, BsPersonCircle, 
   BsSearch, BsJustify, BsFillSunFill, BsFillMoonFill 
 } from 'react-icons/bs';
+import './Header.css';
+
 
 // Define the prop type
 type HeaderProps = {
@@ -47,9 +49,9 @@ const Header: React.FC<HeaderProps> = ({ OpenSidebar }) => {
         <div onClick={toggleTheme} className="icon theme-toggle" aria-label="Toggle Theme">
           {isDarkMode ? <BsFillSunFill className='icon' /> : <BsFillMoonFill className='icon' />}
         </div>
-        <BsFillBellFill className="icon" />
-        <BsFillEnvelopeFill className="icon" />
-        <BsPersonCircle className="icon" />
+        {/* <BsFillBellFill className="icon" /> */}
+        {/* <BsFillEnvelopeFill className="icon" /> */}
+        {/* <BsPersonCircle className="icon" /> */}
       </div>
       <button
         onClick={handleLogout}

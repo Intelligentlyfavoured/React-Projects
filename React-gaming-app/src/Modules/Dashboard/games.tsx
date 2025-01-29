@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import '../../App.css'
+
+import './games.css'
+import { useNavigate } from 'react-router-dom';
 interface Game {
   game_id: number;
   game_name: string;
@@ -25,6 +27,8 @@ const Games: React.FC = () => {
 
   const [gameId, setGameId] = useState<string>("");
   const [updatedGameName, setUpdatedGameName] = useState<string>("");
+
+  const navigate = useNavigate();
   
   const [updatedBy, setUpdatedBy] = useState<string>("1");
   const fetchGames = async () => {
@@ -35,7 +39,7 @@ const Games: React.FC = () => {
     }
 
     try {
-      const response = await fetch("http://197.248.122.31:3000/api/games/fetch-games", {
+      const response = await fetch("https://bonanza.tililtech.com/api/games/fetch-games", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -82,7 +86,7 @@ const handleInsertGame = async (e: React.FormEvent) => {
       
           //console.log("Payload sent to API:", payload);
       
-          const response = await fetch("http://197.248.122.31:3000/api/insert-game", {
+          const response = await fetch("https://bonanza.tililtech.com/api/insert-game", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -95,7 +99,7 @@ const handleInsertGame = async (e: React.FormEvent) => {
           if (response.ok && data.success) {
             setResponseMessage("Game inserted successfully!");
             fetchGames();
-            setActiveForm(null); // Close form after successful insert
+            setActiveForm(null); 
             setGameName("");
             setGameDescription("");
             setGameStatus(1);
@@ -130,7 +134,7 @@ const handleInsertGame = async (e: React.FormEvent) => {
     }
 
     try {
-      const response = await fetch("http://197.248.122.31:3000/api/update-game", {
+      const response = await fetch("https://197.248.122.31:3000/api/update-game", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -149,10 +153,7 @@ const handleInsertGame = async (e: React.FormEvent) => {
         setResponseMessage("Game updated successfully!");
         fetchGames();
         setActiveForm(null); 
-        setGameId("");
-            setUpdatedGameName("");
-            setGameStatus(1);
-            setUpdatedBy("1");
+        
       } else {
         throw new Error(data.message || "Update failed.");
       }
@@ -188,21 +189,7 @@ const handleInsertGame = async (e: React.FormEvent) => {
         
          
         </button>
-        <button
-    onClick={() =>
-      setActiveForm(activeForm === "update" ? null : "update")
-    }
-    style={{
-      padding: "10px 20px",
-      backgroundColor: activeForm === "update" ? "#007BFF" : "#f0f0f0",
-      color: activeForm === "update" ? "#fff" : "#000",
-      borderRadius: "5px",
-    }}
-  >
-   
-
-          Update Game
-        </button>
+        
       </div>
 
       {responseMessage && (
@@ -341,7 +328,7 @@ const handleInsertGame = async (e: React.FormEvent) => {
       <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
         <thead>
           <tr>
-            <th>Game ID</th>
+            <th>Game ID </th>
             <th>Game Name</th>
             <th>Game Description</th>
             <th>Game Status</th>
@@ -361,6 +348,31 @@ const handleInsertGame = async (e: React.FormEvent) => {
                 <td>{game.winner_amount}</td>
                 <td>{game.win_factor}</td>
                 <td>{game.createdby}</td>
+                <td>
+                <button
+        onClick={() => navigate(`/games/${game.game_id}`)}
+        style={{ padding: "5px 10px", cursor: "pointer" }}
+      >
+        View Details
+      </button>
+      </td>
+      <td>
+      <button
+    onClick={() =>
+      setActiveForm(activeForm === "update" ? null : "update")
+    }
+    style={{
+      padding: "10px 20px",
+      backgroundColor: activeForm === "update" ? "#007BFF" : "#f0f0f0",
+      color: activeForm === "update" ? "#fff" : "#000",
+      borderRadius: "5px",
+    }}
+  >
+   
+
+          Update Game
+        </button>
+      </td>
               </tr>
             ))
           ) :

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import './App.css';
+// import './App.css';
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Header from './Modules/Dashboard/header';
 import Sidebar from './Modules/Navbar/Navbar';
@@ -12,6 +12,7 @@ import Reports from "./Modules/Dashboard/reports";
 import Settings from "./Modules/Dashboard/settings";
 import AdminLogin from './Modules/Auth/login';
 import PrivateRoute from "./Modules/Routing/privateRoutes";
+
 
 const App: React.FC = () => {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
@@ -58,6 +59,7 @@ const App: React.FC = () => {
             <PrivateRoute>
               <Gamers />
             </PrivateRoute>} />
+            <Route path="/games/:game_id" element={<Categories />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />

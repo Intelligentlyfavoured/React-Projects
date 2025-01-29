@@ -1,0 +1,100 @@
+/* General Sidebar Styles */
+#sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    transition: all 0.3s ease-in-out;
+    z-index: 1000;
+  }
+  
+  #sidebar.sidebar-responsive {
+    left: -250px; /* Hide sidebar for responsive toggle */
+  }
+  
+  /* Sidebar Title */
+  .sidebar-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #34495e;
+    border-bottom: 1px solid #3b4b58;
+  }
+  
+  .sidebar-title .sidebar-brand {
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+  }
+  
+  .sidebar-title .sidebar-brand .icon_header {
+    margin-right: 10px;
+    font-size: 24px;
+  }
+  
+  .sidebar-title .menu-icon {
+    font-size: 24px;
+    cursor: pointer;
+    display: none; /* Hidden by default, displayed in responsive mode */
+  }
+  
+  /* Sidebar List */
+  .sidebar-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .sidebar-list-item {
+    padding: 15px 20px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid #3b4b58;
+    transition: background-color 0.3s ease;
+  }
+  
+  .sidebar-list-item:hover {
+    background-color: #1abc9c; /* Highlight effect on hover */
+  }
+  
+  .sidebar-list-item a {
+    text-decoration: none;
+    color: inherit;
+    width: 100%; /* Ensures clickable area spans entire list item */
+    display: flex;
+    align-items: center;
+  }
+  
+  .sidebar-list-item .icon {
+    margin-right: 10px;
+    font-size: 20px;
+  }
+  
+  /* Responsive Sidebar */
+  @media (max-width: 768px) {
+    #sidebar {
+      width: 100%;
+      height: auto;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: none; /* Hidden initially */
+    }
+  
+    #sidebar.sidebar-responsive {
+      display: block; /* Show sidebar in responsive mode */
+    }
+  
+    .sidebar-title .menu-icon {
+      display: inline-block; /* Show menu icon in responsive mode */
+    }
+  }
+  
